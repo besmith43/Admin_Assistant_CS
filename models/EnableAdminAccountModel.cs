@@ -6,7 +6,7 @@ namespace Admin_Assistant_CS
 {
     public class EnableAdminAccountModel
     {
-        private string scriptOutput = "";
+        private string _scriptOutput = "";
 
         public void runScript(string password, string hostname)
         {
@@ -20,28 +20,28 @@ namespace Admin_Assistant_CS
             pwshProcess.StartInfo.RedirectStandardOutput = true;
             pwshProcess.Start();
             
-            StreamReader reader = pwshProcess.StandardOutput;
-            string pwshOutput = reader.ReadToEnd();
+            //StreamReader reader = pwshProcess.StandardOutput;
+            //string pwshOutput = reader.ReadToEnd();
             pwshProcess.WaitForExit();
 
-            scriptOutput = pwshOutput;
+            _scriptOutput = Convert.ToString(pwshProcess.ExitCode);
         }
 
         [NotifySignal]
-        public string getPwshOutput
+        public string ScriptOutput
         {
             get
             {
-                return scriptOutput;
+                return _scriptOutput;
             }
             set
             {
-                if (scriptOutput == value)
+                if (_scriptOutput == value)
                 {
                     return;
                 }
 
-                scriptOutput = value;
+                _scriptOutput = value;
                 this.ActivateSignal("scriptOutputChanged");
             }
         }

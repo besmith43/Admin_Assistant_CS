@@ -64,8 +64,8 @@ Page {
 
     Label {
         x: 10
-        y: hostnameField.y + 20
-        text: model.getPwshOutput
+        y: parent.height - 60
+        text: model.scriptOutput
     }
 
     Button {
