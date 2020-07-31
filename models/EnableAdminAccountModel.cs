@@ -24,7 +24,8 @@ namespace Admin_Assistant_CS
             //string pwshOutput = reader.ReadToEnd();
             pwshProcess.WaitForExit();
 
-            _scriptOutput = Convert.ToString(pwshProcess.ExitCode);
+            //ScriptOutput = Convert.ToString(pwshProcess.ExitCode);
+            ScriptOutput = "Done";
         }
 
         [NotifySignal]

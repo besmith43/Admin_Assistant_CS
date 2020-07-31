@@ -65,7 +65,7 @@ Page {
     Label {
         x: 10
         y: parent.height - 60
-        text: model.scriptOutput
+        text: model.ScriptOutput
     }
 
     Button {
