@@ -150,4 +150,18 @@ ApplicationWindow {
             font.family: monoFont.name
         }
     }
+
+    Dialog {
+        id: processingDialog
+        modal: true
+        focus: true
+        title: "Processing"
+        x: (window.width - width) / 2
+        y: window.height / 6
+        width: Math.min(window.width, window.height) / 3 * 2
+
+        BusyIndicator {
+            running: true
+        }
+    }
 }

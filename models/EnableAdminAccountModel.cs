@@ -1,15 +1,16 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Qml.Net;
 
 namespace Admin_Assistant_CS
 {
     public class EnableAdminAccountModel
     {
-        private string _scriptOutput = "";
-
-        public void runScript(string password, string hostname)
+        public async Task<string> runScript(string password, string hostname)
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(500));
+
             string pwshArgs = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -file " + Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + @"\scripts\enable_admin_account.ps1 -LocalAdminPass " + password + " -ComputerName " + hostname;
 
             string pwshArgsTest = string.Format(@"-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -file ""{0}\scripts\test_pwsh.ps1"" -LocalAdminPass {1} -ComputerName {2}", Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), password, hostname);
@@ -25,26 +26,7 @@ namespace Admin_Assistant_CS
             pwshProcess.WaitForExit();
 
             //ScriptOutput = Convert.ToString(pwshProcess.ExitCode);
-            ScriptOutput = "Done";
-        }
-
-        [NotifySignal]
-        public string ScriptOutput
-        {
-            get
-            {
-                return _scriptOutput;
-            }
-            set
-            {
-                if (_scriptOutput == value)
-                {
-                    return;
-                }
-
-                _scriptOutput = value;
-                this.ActivateSignal("scriptOutputChanged");
-            }
+            return "Done";
         }
     }
 }

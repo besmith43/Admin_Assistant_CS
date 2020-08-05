@@ -63,9 +63,9 @@ Page {
     }
 
     Label {
+        id: resultLabel
         x: 10
         y: parent.height - 60
-        text: model.ScriptOutput
     }
 
     Button {
@@ -78,7 +78,12 @@ Page {
 
         function activate() {
             if (adminPasswordField.text.length > 0 && hostnameField.text.length > 0) {
-                model.runScript(adminPasswordField.text, hostnameField.text)
+                processingDialog.open()
+                var task = model.runScript(adminPasswordField.text, hostnameField.text)
+                Net.await(task, function(result) {
+                    resultLabel.text = result
+                    processingDialog.close()
+                })
             }
             else {
                 fillsBlankDialog.open()

@@ -13,7 +13,7 @@ namespace Admin_Assistant_CS
         [Option(Description = "Version", ShortName = "V")]
         public bool Version { get; }
 
-        public static string VersionNumber = "1.0";
+        public static string VersionNumber = "0.1.0";
 
         private int OnExecute()
         {
