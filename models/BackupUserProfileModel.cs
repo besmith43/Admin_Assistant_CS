@@ -42,10 +42,18 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("}");
             #else
                 scriptContents.AppendLine("param(");
-                scriptContents.AppendLine("    [string]$user,");
+                scriptContents.AppendLine("    [string]$user");
                 scriptContents.AppendLine(")");
                 scriptContents.AppendLine("");
-                scriptContents.AppendLine("write-info \"not implemented yet\"");
+                scriptContents.AppendLine("if ($(test-path -path C:\\Temp\\USMT))");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("    if ($(test-path -path C:\\Users\\$user))");
+                scriptContents.AppendLine("    {");
+                scriptContents.AppendLine("        $backup_job = start-job -ScriptBlock {set-location -path \"C:\\Temp\\USMT\"; start-process -FilePath \"C:\\Temp\\USMT\\scanstate\" -ArgumentList \"C:\\Temp\\USMT /ue:*\\* /ui:ttu\\$user /i:migapp.xml /i:miguser.xml /config:config.xml /localonly /o /efs:copyraw /c /v:13\" -wait} ");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("        $backup_job | Wait-Job");
+                scriptContents.AppendLine("    }");
+                scriptContents.AppendLine("}");
             #endif
 
             var pwshSession = new PSCore();

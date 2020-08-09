@@ -45,10 +45,15 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("}");
             #else
                 scriptContents.AppendLine("param(");
-                scriptContents.AppendLine("    [string]$TempUserName,");
+                scriptContents.AppendLine("    [string]$TempUserName");
                 scriptContents.AppendLine(")");
                 scriptContents.AppendLine("");
-                scriptContents.AppendLine("write-info \"not implemented yet\"");
+                scriptContents.AppendLine("$temp = get-localuser $TempUserName");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("if ($temp)");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("	remove-localuser $temp");
+                scriptContents.AppendLine("}");
             #endif
 
             var pwshSession = new PSCore();

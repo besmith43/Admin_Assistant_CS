@@ -21,7 +21,12 @@ namespace Admin_Assistant_CS
             #if DEBUG
                 scriptContents.AppendLine("write-information \"running pwsh\"");
             #else
-                scriptContents.AppendLine("write-information \"not implemented yet\"");
+                scriptContents.AppendLine("if ($(test-path -path C:\\Temp\\USMT))");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("    $load_job = start-job -ScriptBlock {set-location -path \"C:\\Temp\\USMT\"; start-process -FilePath \"C:\\Temp\\USMT\\loadstate\" -argumentlist \"C:\\Temp\\USMT\\ /i:migapp.xml /i:miguser.xml /config:config.xml /c /v:13\" -wait} ");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("    $load_job | Wait-Job");
+                scriptContents.AppendLine("}");
             #endif
 
             var pwshSession = new PSCore();

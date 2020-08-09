@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Qml.Net;
-using BSStandard.Utilities.Scripting;
 
 namespace Admin_Assistant_CS
 {
@@ -14,20 +13,12 @@ namespace Admin_Assistant_CS
         {
             await Task.Delay(TimeSpan.FromMilliseconds(500));
 
-            var scriptContents = new StringBuilder();
-
-            var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
-
-            #if DEBUG
-                scriptContents.AppendLine("write-information \"running pwsh\"");
-            #else
-                scriptContents.AppendLine("write-information \"not implemented yet\"");
+            #if !DEBUG
+                string pwshParameters = $"-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -file { Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) }\\resources\\scripts\\connect_to_domain.ps1\"";
+                var pwshProcess = System.Diagnostics.Process.Start("powershell.exe", pwshParameters);
+                pwshProcess.Start();
+                pwshProcess.WaitForExit();
             #endif
-
-            var pwshSession = new PSCore();
-            pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
-
-            await pwshSession.RunScript(scriptContents.ToString());
 
             return "Done";
         }
