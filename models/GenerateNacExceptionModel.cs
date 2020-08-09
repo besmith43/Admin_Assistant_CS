@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Qml.Net;
-using BSStandard.Utilities.Scripting;
+using BSStandard.Utilities.Work;
 
 namespace Admin_Assistant_CS
 {
@@ -14,22 +14,16 @@ namespace Admin_Assistant_CS
         {
             await Task.Delay(TimeSpan.FromMilliseconds(500));
 
-            var scriptContents = new StringBuilder();
-
-            var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
+            string csvPath;
 
             #if DEBUG
-                scriptContents.AppendLine("write-information \"running pwsh\"");
+                csvPath = Environment.CurrentDirectory;
             #else
-                scriptContents.AppendLine("write-information \"not implemented yet\"");
+                csvPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             #endif
 
-            var pwshSession = new PSCore();
-            pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
-
-            await pwshSession.RunScript(scriptContents.ToString());
-
-            return "Done";
+            GenerateNACException NACException = new GenerateNACException();
+            return NACException.ComputerRun(csvPath);
         }
     }
 }

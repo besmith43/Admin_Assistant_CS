@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="BSStandard.Utilities.Debug" Version="1.0.0-alpha" />
     <PackageReference Include="BSStandard.Utilities.Scripting.PSCore" Version="1.0.0-rc" />
+    <PackageReference Include="BSStandard.Utilities.Work.Generate-NACException" Version="1.0.0-beta" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
     <PackageReference Include="Qml.Net" Version="0.10.1" />
     <PackageReference Include="Qml.Net.WindowsBinaries" Version="0.10.1" />
