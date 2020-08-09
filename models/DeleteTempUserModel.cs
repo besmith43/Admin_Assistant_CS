@@ -7,7 +7,7 @@ namespace Admin_Assistant_CS
 {
     public class DeleteTempUserModel
     {
-        public async Task<string> RunScript(string tempUserAccount)
+        public async Task<string> runScript(string tempUserAccount)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(500));
 

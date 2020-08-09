@@ -10,8 +10,8 @@ import QtQuick.Controls.Material 2.1
 
 ApplicationWindow {
     id: window
-    width: 360
-    height: 520
+    width: 400
+    height: 550
     visible: true
     title: "Admin-Assistant"
 
@@ -130,6 +130,15 @@ ApplicationWindow {
             id: pane
 
             /* starting window content */
+
+            Text {
+                x: 10
+                y: 10
+                width: parent.width - 50
+                text: "This is test material.  Eventually I want this to have the Tech Logo"
+                wrapMode: Text.WordWrap
+                font.family: monoFont.name
+            }
         }
     }
     

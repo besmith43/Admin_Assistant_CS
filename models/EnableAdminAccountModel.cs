@@ -1,7 +1,10 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Qml.Net;
+using BSStandard.Utilities.Scripting;
 
 namespace Admin_Assistant_CS
 {
@@ -11,21 +14,43 @@ namespace Admin_Assistant_CS
         {
             await Task.Delay(TimeSpan.FromMilliseconds(500));
 
-            string pwshArgs = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -file " + Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + @"\scripts\enable_admin_account.ps1 -LocalAdminPass " + password + " -ComputerName " + hostname;
+            var scriptContents = new StringBuilder();
 
-            string pwshArgsTest = string.Format(@"-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -file ""{0}\scripts\test_pwsh.ps1"" -LocalAdminPass {1} -ComputerName {2}", Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), password, hostname);
+            var scriptParameters = new Dictionary<string, object>()
+            {
+                { "LocalAdminPass", password },
+                { "ComputerName", hostname }
+            };
 
-            Console.WriteLine(pwshArgsTest);
+            var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
 
-            var pwshProcess = System.Diagnostics.Process.Start("powershell.exe", pwshArgsTest);
-            pwshProcess.StartInfo.RedirectStandardOutput = true;
-            pwshProcess.Start();
-            
-            //StreamReader reader = pwshProcess.StandardOutput;
-            //string pwshOutput = reader.ReadToEnd();
-            pwshProcess.WaitForExit();
+            #if DEBUG
+                scriptContents.AppendLine("param(");
+                scriptContents.AppendLine("    [string]$LocalAdminPass,");
+                scriptContents.AppendLine("    [string]$ComputerName");
+                scriptContents.AppendLine(")");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("if ($LocalAdminPass -eq \"testing\" -and $ComputerName -eq \"testing\")");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("    Write-Information \"both fields are testing\"");
+                scriptContents.AppendLine("    $code = 0");
+                scriptContents.AppendLine("    exit $code");
+                scriptContents.AppendLine("}");
+                scriptContents.AppendLine("else");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("    Write-Error \"bad input\"");
+                scriptContents.AppendLine("    $code = 1");
+                scriptContents.AppendLine("    exit $code");
+                scriptContents.AppendLine("}");
+            #else
+                scriptContents.AppendLine("write-info \"not implemented yet\"");
+            #endif
 
-            //ScriptOutput = Convert.ToString(pwshProcess.ExitCode);
+            var pwshSession = new PSCore();
+            pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
+
+            await pwshSession.RunScript(scriptContents.ToString());
+
             return "Done";
         }
     }

@@ -41,7 +41,6 @@ Page {
                 width: tempnameRectangle.width - 50
                 focus: true
                 KeyNavigation.tab: okButton
-                echoMode: TextInput.Password
             }
         }
     }
