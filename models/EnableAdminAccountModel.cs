@@ -43,13 +43,18 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("    exit $code");
                 scriptContents.AppendLine("}");
             #else
+                scriptContents.AppendLine("param(");
+                scriptContents.AppendLine("    [string]$LocalAdminPass,");
+                scriptContents.AppendLine("    [string]$ComputerName");
+                scriptContents.AppendLine(")");
+                scriptContents.AppendLine("");
                 scriptContents.AppendLine("write-info \"not implemented yet\"");
             #endif
 
             var pwshSession = new PSCore();
             pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
 
-            await pwshSession.RunScript(scriptContents.ToString());
+            await pwshSession.RunScript(scriptContents.ToString(), scriptParameters);
 
             return "Done";
         }
