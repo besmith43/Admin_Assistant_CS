@@ -48,7 +48,36 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("    [string]$ComputerName");
                 scriptContents.AppendLine(")");
                 scriptContents.AppendLine("");
-                scriptContents.AppendLine("write-info \"not implemented yet\"");
+                scriptContents.AppendLine("set-executionpolicy unrestricted -confirm -force");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("$password = ConvertTo-SecureString $LocalAdminPass -AsPlainText -Force");
+                scriptContents.AppendLine("$admin = get-localuser -name \"Administrator\"");
+                scriptContents.AppendLine("$admin | enable-localuser");
+                scriptContents.AppendLine("$admin | set-localuser -password $password -accountneverexpires -passwordneverexpires $True");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("# set Time zone to central");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("set-timezone \"Central Standard Time\"");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("# set time zone automatically");
+                scriptContents.AppendLine("");
+                scripContents.AppendLine("set-itemproperty -path \"HKLM:\\SYSTEM\\CurrentControlSet\\Services\\tzautoupdate\" -name \"Start\" -Value 3 -type DWORD");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("# install dotnet framework 3.5");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("if (!$(test-path C:\\Temp))");
+                scriptContents.AppendLine("{");
+                scriptContents.AppendLine("	new-item -itemtype Directory -path C:\\Temp");
+                scriptContents.AppendLine("	$(get-item -path C:\\Temp -Force).attributes = \"Hidden\"");
+                scriptContents.AppendLine("}");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("copy-item -Path \"$PSScriptRoot\\sxs\\\" -Destination \"C:\\Temp\\\" -Recurse -Force");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("start-process -filepath \"C:\\windows\\system32\\Dism.exe\" -argumentlist '/online /enable-feature /featurename:NetFX3 /All /source:"C:\\Temp\\sxs" /LimitAccess' -wait ");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("# changing the computer name");
+                scriptContents.AppendLine("");
+                scriptContents.AppendLine("rename-computer -newname $ComputerName -restart");
             #endif
 
             var pwshSession = new PSCore();

@@ -26,7 +26,7 @@ if (!$(test-path C:\Temp))
 	$(get-item -path C:\Temp -Force).attributes = "Hidden"
 }
 
-copy-item -Path "$PSScriptRoot\sxs\ -Destination "C:\Temp\ -Recurse -Force
+copy-item -Path "$PSScriptRoot\sxs\" -Destination "C:\Temp\" -Recurse -Force
 
 start-process -filepath "C:\windows\system32\Dism.exe" -argumentlist '/online /enable-feature /featurename:NetFX3 /All /source:"C:\Temp\sxs" /LimitAccess' -wait
 
