@@ -61,7 +61,7 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("");
                 scriptContents.AppendLine("# set time zone automatically");
                 scriptContents.AppendLine("");
-                scripContents.AppendLine("set-itemproperty -path \"HKLM:\\SYSTEM\\CurrentControlSet\\Services\\tzautoupdate\" -name \"Start\" -Value 3 -type DWORD");
+                scriptContents.AppendLine("set-itemproperty -path \"HKLM:\\SYSTEM\\CurrentControlSet\\Services\\tzautoupdate\" -name \"Start\" -Value 3 -type DWORD");
                 scriptContents.AppendLine("");
                 scriptContents.AppendLine("# install dotnet framework 3.5");
                 scriptContents.AppendLine("");
@@ -73,7 +73,7 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("");
                 scriptContents.AppendLine("copy-item -Path \"$PSScriptRoot\\sxs\\\" -Destination \"C:\\Temp\\\" -Recurse -Force");
                 scriptContents.AppendLine("");
-                scriptContents.AppendLine("start-process -filepath \"C:\\windows\\system32\\Dism.exe\" -argumentlist '/online /enable-feature /featurename:NetFX3 /All /source:"C:\\Temp\\sxs" /LimitAccess' -wait ");
+                scriptContents.AppendLine("start-process -filepath \"C:\\windows\\system32\\Dism.exe\" -argumentlist '/online /enable-feature /featurename:NetFX3 /All /source:\"C:\\Temp\\sxs\" /LimitAccess' -wait ");
                 scriptContents.AppendLine("");
                 scriptContents.AppendLine("# changing the computer name");
                 scriptContents.AppendLine("");

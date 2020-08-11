@@ -17,7 +17,7 @@ Page {
     Rectangle {
         id: adminPasswordRectangle
         x:10
-        y: notes.height
+        y: notes.height - 20
         width: parent.width
 
         Text {

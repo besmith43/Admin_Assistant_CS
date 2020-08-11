@@ -17,6 +17,8 @@ namespace Admin_Assistant_CS
 
             await Task.Delay(TimeSpan.FromMilliseconds(500));
 
+            Debug.Writeline("Setting up script variables");
+
             var scriptContents = new StringBuilder();
 
             var scriptParameters = new Dictionary<string, object>()
@@ -27,6 +29,9 @@ namespace Admin_Assistant_CS
             var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
 
             #if DEBUG
+
+                Debug.Writeline("Start Defining Debug Script");
+
                 scriptContents.AppendLine("param(");
                 scriptContents.AppendLine("    [string]$TempUserName");
                 scriptContents.AppendLine(")");
@@ -43,6 +48,8 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("    $code = 1");
                 scriptContents.AppendLine("    exit $code");
                 scriptContents.AppendLine("}");
+
+                Debug.Writeline("Done Defining Debug Script");
             #else
                 scriptContents.AppendLine("param(");
                 scriptContents.AppendLine("    [string]$TempUserName");
@@ -56,10 +63,19 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("}");
             #endif
 
+            Debug.Writeline("Starting PSCore");
+
             var pwshSession = new PSCore();
+
+            Debug.Writeline("Initializing Runspaces");
+
             pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
 
+            Debug.Writeline("calling script in PSCore");
+
             await pwshSession.RunScript(scriptContents.ToString(), scriptParameters);
+
+            Debug.Writeline("Done running script \nabout to exit");
 
             return "Done";
         }
