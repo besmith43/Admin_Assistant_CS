@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Qml.Net;
 using BSStandard.Utilities.Scripting;
+using BSStandard.Utilities;
 
 namespace Admin_Assistant_CS
 {
@@ -12,11 +13,17 @@ namespace Admin_Assistant_CS
     {
         public async Task<string> runScript()
         {
+            Debug.Writeline("starting generate USMT xml runscript");
+
             await Task.Delay(TimeSpan.FromMilliseconds(500));
+
+            Debug.Writeline("declaring variables for script");
 
             var scriptContents = new StringBuilder();
 
             var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
+
+            Debug.Writeline("declaring script");
 
             #if DEBUG
                 scriptContents.AppendLine("write-information \"running pwsh\"");
@@ -39,10 +46,19 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("$scan_job | Wait-Job");
             #endif
 
+            Debug.Writeline("starting PSCore");
+
             var pwshSession = new PSCore();
+
+            Debug.Writeline("intializing runspaces");
+
             pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
 
+            Debug.Writeline("starting pwsh script");
+
             await pwshSession.RunScript(scriptContents.ToString());
+
+            Debug.Writeline("done running script and exiting function");
 
             return "Done";
         }

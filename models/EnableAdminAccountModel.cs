@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Qml.Net;
 using BSStandard.Utilities.Scripting;
+using BSStandard.Utilities;
 
 namespace Admin_Assistant_CS
 {
@@ -12,7 +13,11 @@ namespace Admin_Assistant_CS
     {
         public async Task<string> runScript(string password, string hostname)
         {
+            Debug.Writeline("Starting Enable Admin Account RunScript Function");
+
             await Task.Delay(TimeSpan.FromMilliseconds(500));
+
+            Debug.Writeline("Setting up variables for pwsh Script");
 
             var scriptContents = new StringBuilder();
 
@@ -23,6 +28,8 @@ namespace Admin_Assistant_CS
             };
 
             var modulesToLoad = new string[] { "Microsoft.PowerShell.Utility" };
+
+            Debug.Writeline("declaring script");
 
             #if DEBUG
                 scriptContents.AppendLine("param(");
@@ -80,10 +87,19 @@ namespace Admin_Assistant_CS
                 scriptContents.AppendLine("rename-computer -newname $ComputerName -restart");
             #endif
 
+            Debug.Writeline("starting PSCore");
+
             var pwshSession = new PSCore();
+
+            Debug.Writeline("initializing pwsh runspace");
+
             pwshSession.InitializeRunspaces(2, 10, modulesToLoad);
 
+            Debug.Writeline("running pwsh script");
+
             await pwshSession.RunScript(scriptContents.ToString(), scriptParameters);
+
+            Debug.Writeline("completed the script and ending the function");
 
             return "Done";
         }
