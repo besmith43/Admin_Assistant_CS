@@ -1,4 +1,4 @@
-params (
+param (
     [System.Management.Automation.PSCredential]$Credential = $(Get-Credential)
 )
 

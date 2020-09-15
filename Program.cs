@@ -1,5 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Diagnostics;
+using System.Security.Principal;
+using System.Windows.Forms;
 using Qml.Net;
 using Qml.Net.Runtimes;
 using McMaster.Extensions.CommandLineUtils;
@@ -21,6 +25,14 @@ namespace Admin_Assistant_CS
             {
                 GetVersion();
                 return 0;
+            }
+
+            if (IsWindows())
+            {
+                if (!TestVCRuntime())
+                {
+                    InstallVCRuntime();
+                }
             }
 
             RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();
@@ -46,11 +58,7 @@ namespace Admin_Assistant_CS
                     Qml.Net.Qml.RegisterType<BackupUserProfileModel>("AdminAssistant");
                     Qml.Net.Qml.RegisterType<LoadUserProfileModel>("AdminAssistant");
 
-                    #if DEBUG
-                         qmlEngine.Load("pages/main.qml");
-                    #else
-                        qmlEngine.Load($"{Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)}/pages/main.qml");
-                    #endif
+                    qmlEngine.Load($"{Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)}/pages/main.qml");
                     
                     return application.Exec();
                 }
@@ -60,6 +68,56 @@ namespace Admin_Assistant_CS
         public static void GetVersion()
         {
             Console.WriteLine($"CmdLineParsingTest Version: { VersionNumber }");
+        }
+
+        public static bool IsWindows() =>
+            System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+
+        public static bool IsAdministrator()
+        {
+            var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        public static void RuntimeError(string message, string title)
+        {
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public static bool TestVCRuntime()
+        {
+            return File.Exists(@"C:\Windows\System32\msvcp140.dll");
+        }
+
+        public static void InstallVCRuntime()
+        {
+            string installer = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)}/VC_redist.x64.exe";
+
+            if (!File.Exists(installer))
+            {
+                DownloadVCRuntime();
+            }
+
+            if (File.Exists(installer) && IsAdministrator())
+            {
+                var installerProcess = Process.Start(installer, "/install /quiet /noreboot");
+
+                installerProcess.Start();
+                installerProcess.WaitForExit();
+            }
+            else
+            {
+                RuntimeError("You need to run the VC++ installer","VC++ Runtime Missing");
+            }
+        }
+
+        public static void DownloadVCRuntime()
+        {
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://aka.ms/vs/16/release/vc_redist.x64.exe", $"{Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)}/vc_redist.x64.exe");
+            }
         }
     }
 }
