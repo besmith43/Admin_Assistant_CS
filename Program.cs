@@ -29,6 +29,12 @@ namespace Admin_Assistant_CS
 
             if (IsWindows())
             {
+                if (!IsAdministrator())
+                {
+                    RuntimeError("Please make sure to run this application as Administrator", "Not Admin");
+                    return 1;
+                }
+
                 if (!TestVCRuntime())
                 {
                     InstallVCRuntime();
